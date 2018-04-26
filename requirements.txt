@@ -1,0 +1,2 @@
+pyqt5==5.10.1
+#pip install --index-url=http://download.qt.io/snapshots/ci/pyside/5.11/latest/ pyside2 --trusted-host download.qt.io
