@@ -149,7 +149,11 @@ class DimensionPreviewRect(QtGui.QGraphicsRectItem):
             x, y = preview.applyTransform( event.scenePos() )
             debugPrint(4, 'hoverMoveEvent: x %f, y %f' % (x, y) )
             x, y= applyGridRounding( x, y)
-            XML = '<svg width="%i" height="%i"> %s </svg>' % (preview.drawingVars.width, preview.drawingVars.height, self.dimensionSvgFun( x, y ))
+            XML = '<svg width="%i" height="%i"> %s </svg>' % (
+                preview.drawingVars.width,
+                preview.drawingVars.height,
+                self.dimensionSvgFun( x, y )
+            )
             if isinstance(XML, unicode): 
                 XML = XML.encode('utf8')
             debugPrint(5, XML)
