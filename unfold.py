@@ -6,6 +6,8 @@ import dimensionSvgConstructor
 import numpy
 from numpy import pi, sin, cos, arctan2, arcsin, arccos, dot
 from numpy.linalg import norm
+import FreeCADGui
+
 dotProduct = numpy.dot
 crossProduct = numpy.cross
 
@@ -330,7 +332,7 @@ class UnfoldCommand:
             FreeCADGui.Control.showDialog( d.taskPanelDialog )
             previewDimension.initializePreview( d, projectionSvg, clickHandler )
         else:
-            QtGui.QMessageBox.information(  QtGui.qApp.activeWindow(), "Info", 'Please select touching faces from the same shape')
+            QtGui.QMessageBox.information(  FreeCADGui.getMainWindow(), "Info", 'Please select touching faces from the same shape')
     def GetResources(self): 
         return {
             'Pixmap' : ':/dd/icons/unfold.svg', 

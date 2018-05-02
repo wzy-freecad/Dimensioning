@@ -1,5 +1,7 @@
 from dimensioning import *
 import datetime
+import FreeCAD, FreeCADGui
+
 
 parms = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/Drawing_Dimensioning")
 
@@ -79,7 +81,7 @@ class Form_pagePreferences(QtGui.QWidget):
         try:
             dialogDir = os.path.join( FreeCAD.getResourceDir(), 'Mod', 'Drawing', 'Templates' )
             dialog = QtGui.QFileDialog(
-                QtGui.qApp.activeWindow(),
+                FreeCADGui.getMainWindow(),
                 "Select Drawing Page Template",
                 dialogDir
                 )
@@ -92,7 +94,7 @@ class Form_pagePreferences(QtGui.QWidget):
     
     def substatutionHelp_button_clicked(self):
         QtGui.QMessageBox.information( 
-            QtGui.qApp.activeWindow(), 
+            FreeCADGui.getMainWindow(),
             'Drawing Dimensioning Shortcut Substatutions Help', 
             '''When a page is created using drawing dimension shortcut command, each line in that page's editable texts is checked against these substatution lists.
 
