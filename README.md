@@ -21,6 +21,8 @@ $ sudo apt-get install git python-numpy python-pyside
 $ mkdir ~/.FreeCAD/Mod
 $ cd ~/.FreeCAD/Mod
 $ git clone https://github.com/hamish2014/FreeCAD_drawing_dimensioning.git
+$ cd FreeCAD_drawing_dimensioning
+$ git checkout 0.17/master
 ```
 
 Once installed, use git to easily update to the latest version:
