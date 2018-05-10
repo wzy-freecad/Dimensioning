@@ -15,8 +15,8 @@ class ExportToDxfCommand:
             )
         dialog.setAcceptMode(QtGui.QFileDialog.AcceptSave)
         dialog.setNameFilter("DXF files (*.dxf)")
-        lineEdit = [c for c in dialog.children() if isinstance(c, QtGui.QLineEdit) ][0]
-        lineEdit.setText(FreeCAD.ActiveDocument.Label + '.dxf')
+        # lineEdit = [c for c in dialog.children() if isinstance(c, QtGui.QLineEdit) ][0]
+        # lineEdit.setText(FreeCAD.ActiveDocument.Label + '.dxf')
         if dialog.exec_():
             dxf_fn = dialog.selectedFiles()[0]
             debugPrint(3,'saving to %s' % dxf_fn)
@@ -58,7 +58,7 @@ def export_via_pstoedit( dxf_fn, V):
         # -f "format[:options]" target output format recognized by pstoedit.
         # -flat [flatness factor] If the output format does not support curves in the way PostScript does or if the -nc option is specified, all curves are approximated by lines. Using the -flat option  one  can  control  this approximation. This parameter is directly converted to a PostScript setflat command. Higher numbers, e.g. 10 give rougher, lower numbers, e.g. 0.1 finer approximations. #I the default is 1
         QtGui.QMessageBox.information(  FreeCADGui.getMainWindow(), "Success", "%s successfully created" % dxf_fn )
-    except RuntimeError, msg:
+    except RuntimeError as msg:
         QtGui.QMessageBox.critical( FreeCADGui.getMainWindow(), "pstoedit failed.", "%s\n\n suggestion: relaunch FreeCAD from BASH and try again." % msg )
         #only works if FreeCAD is launched from bash shell?
         #work around for this?
@@ -114,8 +114,15 @@ def export_via_dxfwrite(  dxf_fn, V):
             x,y = element.applyTransforms( float( element.parms['x'] ), float( element.parms['y'] ) )
             t = SvgTextParser(element.XML[element.pStart: element.pEnd ] )
             try:
-                drawing.add(dxf.text( t.text, insert=(x, yT(y)), height=t.height()*0.8, rotation=t.rotation, layer='TEXTLAYER', color=color_code) )
-            except ValueError, msg:
+                drawing.add(
+                    dxf.text( t.text,
+                              insert=(x, yT(y)),
+                              height=t.height()*0.8,
+                              rotation=t.rotation,
+                              layer='TEXTLAYER',
+                              color=color_code)
+                )
+            except ValueError as msg:
                 temp = t.text.replace('<tspan>','')
                 temp = temp.replace('</tspan>','')
                 t.text = temp
@@ -124,8 +131,20 @@ def export_via_dxfwrite(  dxf_fn, V):
                 if defaultAnchor == 'middle':
                     shift = t.width()/2.0   
                     x,y = element.applyTransforms( float( element.parms['x'] )-shift, float( element.parms['y'] ) )
-                drawing.add(dxf.text( temp, insert=(x, yT(y)), height=t.height()*0.8, rotation=t.rotation, layer='TEXTLAYER', color=color_code) )
-                #FreeCAD.Console.PrintWarning('dxf_export: unable to convert text element "%s": %s, ignoring...\n' % (element.XML[element.pStart: element.pEnd ], str(msg) ) )
+                drawing.add(
+                    dxf.text( temp,
+                              insert=(x, yT(y)),
+                              height=t.height()*0.8,
+                              rotation=t.rotation,
+                              layer='TEXTLAYER',
+                              color=color_code)
+                )
+                FreeCAD.Console.PrintWarning(
+                    'dxf_export: unable to convert text element "%s": %s, ignoring...\n' % (
+                        element.XML[element.pStart: element.pEnd ],
+                        str(msg)
+                    )
+                )
         elif element.tag == 'path': 
             #FreeCAD.Console.PrintMessage(element.parms['d']+'\n')
             path = SvgPath( element )
@@ -157,7 +176,9 @@ def export_via_dxfwrite(  dxf_fn, V):
             height =  float( element.parms['height'] )* element.scaling2()
             drawing.add(dxf.rectangle((x, yT(y)), width, -height, color = color_code) )
         elif not element.tag in warningsShown:
-            FreeCAD.Console.PrintWarning('dxf_export: Warning export of %s elements not supported, ignoring...\n' % element.tag )
+            FreeCAD.Console.PrintWarning(
+                'dxf_export: Warning export of %s elements not supported, ignoring...\n' % element.tag
+            )
             warningsShown.append(element.tag)
     drawing.save()
     FreeCAD.Console.PrintMessage("dxf_export: %s successfully created\n" % dxf_fn)
