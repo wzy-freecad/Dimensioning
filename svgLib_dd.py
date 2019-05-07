@@ -586,10 +586,10 @@ if __name__ == '__main__':
         
         def initUI(self):      
 
-            vbox = QtGui.QVBoxLayout()
+            vbox = QtWidgets.QVBoxLayout()
 
-            btn = QtGui.QPushButton('Dialog', self)
-            btn.setSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+            btn = QtWidgets.QPushButton('Dialog', self)
+            btn.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
             btn.move(20, 20)
             vbox.addWidget(btn)
 
@@ -619,7 +619,7 @@ if __name__ == '__main__':
         
         def showDialog(self):
 
-            font, ok = QtGui.QFontDialog.getFont()
+            font, ok = QtWidgets.QFontDialog.getFont()
             if ok:
                 self.lbl.setFont(font)
                 self.textRenderer.font_family = font.family()

@@ -26,50 +26,50 @@ class Form_pagePreferences(QtWidgets.QWidget):
         super(Form_pagePreferences, self).__init__()
         self.initUI()        
     def initUI(self):
-        vbox = QtGui.QVBoxLayout()
-        GroupBox_templates = QtGui.QGroupBox('Page Templates:')
-        vbox2 =  QtGui.QVBoxLayout()
-        Templates_textEdit = QtGui.QPlainTextEdit()
+        vbox = QtWidgets.QVBoxLayout()
+        GroupBox_templates = QtWidgets.QGroupBox('Page Templates:')
+        vbox2 =  QtWidgets.QVBoxLayout()
+        Templates_textEdit = QtWidgets.QPlainTextEdit()
         Templates_textEdit.setPlainText( parms.GetString( 'shortcut_page_templates', ''))
         Templates_textEdit.setMinimumHeight(42)
         vbox2.addWidget( Templates_textEdit )
         self.Templates_textEdit = Templates_textEdit
-        addTemplate_button = QtGui.QPushButton('+')
+        addTemplate_button = QtWidgets.QPushButton('+')
         addTemplate_button.clicked.connect( self.addTemplate_button_clicked )
-        hbox = QtGui.QHBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
         hbox.addStretch(1)
         hbox.addWidget(addTemplate_button )
         vbox2.addLayout(hbox)
         self.addTemplate_button = addTemplate_button
-        vbox2.addWidget( QtGui.QLabel('*FreeCAD needs to be restared'))
-        vbox2.addWidget( QtGui.QLabel('for changes to take effect'))
+        vbox2.addWidget( QtWidgets.QLabel('*FreeCAD needs to be restared'))
+        vbox2.addWidget( QtWidgets.QLabel('for changes to take effect'))
         GroupBox_templates.setLayout(vbox2)
         vbox.addWidget(GroupBox_templates)
 
-        GroupBox_substations = QtGui.QGroupBox('Page Editable Substations:')
-        vbox3 =  QtGui.QVBoxLayout()
-        Substations_matches_textEdit = QtGui.QPlainTextEdit()
-        Substations_with_textEdit = QtGui.QPlainTextEdit()
+        GroupBox_substations = QtWidgets.QGroupBox('Page Editable Substations:')
+        vbox3 =  QtWidgets.QVBoxLayout()
+        Substations_matches_textEdit = QtWidgets.QPlainTextEdit()
+        Substations_with_textEdit = QtWidgets.QPlainTextEdit()
         Substations_matches_textEdit.setPlainText( parms.GetString( 'shortcut_substations_matches', ''))
         Substations_with_textEdit.setPlainText( parms.GetString( 'shortcut_substations_with', ''))
-        hbox3 = QtGui.QHBoxLayout()
-        vbox4 = QtGui.QVBoxLayout()
-        vbox4.addWidget( QtGui.QLabel('Substitute'))
+        hbox3 = QtWidgets.QHBoxLayout()
+        vbox4 = QtWidgets.QVBoxLayout()
+        vbox4.addWidget( QtWidgets.QLabel('Substitute'))
         vbox4.addWidget( Substations_matches_textEdit )
         hbox3.addLayout(vbox4 )
         #hbox3.addStretch(1)
-        hbox3.addWidget(QtGui.QLabel('->'))
+        hbox3.addWidget(QtWidgets.QLabel('->'))
         #hbox3.addStretch(1)
-        vbox5 = QtGui.QVBoxLayout()
-        vbox5.addWidget( QtGui.QLabel('with'))
+        vbox5 = QtWidgets.QVBoxLayout()
+        vbox5.addWidget( QtWidgets.QLabel('with'))
         vbox5.addWidget( Substations_with_textEdit )
         hbox3.addLayout(vbox5 )
         vbox3.addLayout(hbox3)
         self.Substations_matches_textEdit = Substations_matches_textEdit
         self.Substations_with_textEdit = Substations_with_textEdit
-        substatutionHelp_button = QtGui.QPushButton('?')
+        substatutionHelp_button = QtWidgets.QPushButton('?')
         substatutionHelp_button.clicked.connect( self.substatutionHelp_button_clicked )
-        hbox4 = QtGui.QHBoxLayout()
+        hbox4 = QtWidgets.QHBoxLayout()
         hbox4.addStretch(1)
         hbox4.addWidget(substatutionHelp_button )
         vbox3.addLayout(hbox4)
@@ -80,7 +80,7 @@ class Form_pagePreferences(QtWidgets.QWidget):
     def addTemplate_button_clicked( self ):
         try:
             dialogDir = os.path.join( FreeCAD.getResourceDir(), 'Mod', 'Drawing', 'Templates' )
-            dialog = QtGui.QFileDialog(
+            dialog = QtWidgets.QFileDialog(
                 FreeCADGui.getMainWindow(),
                 "Select Drawing Page Template",
                 dialogDir
@@ -93,7 +93,7 @@ class Form_pagePreferences(QtWidgets.QWidget):
             FreeCAD.Console.PrintError(traceback.format_exc())    
     
     def substatutionHelp_button_clicked(self):
-        QtGui.QMessageBox.information( 
+        QtWidgets.QMessageBox.information(
             FreeCADGui.getMainWindow(),
             'Drawing Dimensioning Shortcut Substatutions Help', 
             '''When a page is created using drawing dimension shortcut command, each line in that page's editable texts is checked against these substatution lists.

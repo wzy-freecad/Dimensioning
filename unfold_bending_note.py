@@ -17,14 +17,14 @@ class angleText_widget:
     def valueChanged( self, arg1):
         d.angleText = arg1
     def generateWidget( self, dimensioningProcess ):
-        self.lineEdit = QtGui.QLineEdit()
+        self.lineEdit = QtWidgets.QLineEdit()
         self.lineEdit.setText(self.default)
         d.angleText = self.default
         self.lineEdit.textChanged.connect(self.valueChanged)
         return DimensioningTaskDialog_generate_row_hbox('angle text:', self.lineEdit)
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyString", 'angleText', 'Parameters')
-        obj.angleText = d.angleText.encode('utf8') 
+        obj.angleText = d.angleText
     def get_values_from_dimension_object( self, obj, KWs ):
         KWs['angleText'] = obj.angleText #should be unicode
 d.dialogWidgets.append( angleText_widget() )

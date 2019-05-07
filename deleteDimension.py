@@ -31,16 +31,16 @@ class deleteAllButton:
         except:
             errorMessagebox_with_traceback()
     def generateWidget( self, dimensioningProcess ):
-        button = QtGui.QPushButton('Delete All')
+        button = QtWidgets.QPushButton('Delete All')
         button.clicked.connect( self.deleteAllDimensions )
         return button
 d.dialogWidgets.append( deleteAllButton() )
 class UndoInfoText:
     def generateWidget( self, dimensioningProcess ):
-        vbox = QtGui.QVBoxLayout()
-        vbox.addWidget( QtGui.QLabel('To undo a deletion:') )
-        vbox.addWidget( QtGui.QLabel('  1) Undo') )
-        vbox.addWidget( QtGui.QLabel('  2) Recompute Document') )
+        vbox = QtWidgets.QVBoxLayout()
+        vbox.addWidget( QtWidgets.QLabel('To undo a deletion:') )
+        vbox.addWidget( QtWidgets.QLabel('  1) Undo') )
+        vbox.addWidget( QtWidgets.QLabel('  2) Recompute Document') )
         return vbox
 d.dialogWidgets.append( UndoInfoText() )
 

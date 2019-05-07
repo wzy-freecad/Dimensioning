@@ -25,9 +25,10 @@ class Proxy_DimensionObject_prototype:
         return D
 
     def __setstate__(self, D):
-        self.__dict__.update(D) 
-        self.selections = pickle.loads( D['selections_dumps'] )
-        self.svgFun =  pickle.loads( D['svgFun_dumps'] )
+        self.__dict__.update(D)
+        # print("{} : {}".format(D['selections_dumps'], D['svgFun_dumps']))
+        self.selections = pickle.loads( pickle.dumps(D['selections_dumps']) )
+        self.svgFun =  pickle.loads( pickle.dumps(D['svgFun_dumps']) )
 
     def dimensionProcess( self ):
         raise ValueError("override  dimensionProcess to return the dimensionProcessTracker")

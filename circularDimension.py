@@ -7,10 +7,11 @@ from dimensionSvgConstructor import *
 
 d = DimensioningProcessTracker()
 
-def circularDimensionSVG( center_x, center_y, radius, radialLine_x=None, radialLine_y=None, tail_x=None, tail_y=None, text_x=None, text_y=None, autoPlaceText=False, autoPlaceOffset=2.0,
+def circularDimensionSVG( center_x, center_y, radius, radialLine_x=None, radialLine_y=None, tail_x=None, tail_y=None,
+                          text_x=None, text_y=None, autoPlaceText=False, autoPlaceOffset=2.0,
                           scale=1.0, textFormat_circular='Ø%3.3f', comma_decimal_place=False,
-                          centerPointDia = 1, arrowL1=3, arrowL2=1, arrowW=2, strokeWidth=0.5, lineColor='blue', arrow_scheme='auto',
-                          textRenderer=defaultTextRenderer):
+                          centerPointDia = 1, arrowL1=3, arrowL2=1, arrowW=2, strokeWidth=0.5,
+                          lineColor='blue', arrow_scheme='auto', textRenderer=defaultTextRenderer):
     XML_body = [ ' <circle cx ="%f" cy ="%f" r="%f" stroke="none" fill="%s" /> ' % (center_x, center_y, centerPointDia*0.5, lineColor) ]
     #XML_body.append( '<circle cx="%f" cy="%f" r="%f" stroke="rgb(0,0,255)" stroke-width="%1.2f" fill="none" />' % (center_x, center_y, radius, strokeWidth) )
     if radialLine_x != None and radialLine_y != None:

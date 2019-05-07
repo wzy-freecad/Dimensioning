@@ -11,7 +11,8 @@ d = DimensioningProcessTracker() #shorthand
 #
 def linearDimensionSVG_points( x1, y1, x2, y2, x3, y3, x4=None, y4=None, autoPlaceText=False, autoPlaceOffset=2.0,
                                scale=1.0, textFormat_linear='%(value)3.3f', comma_decimal_place=False,
-                               gap_datum_points = 2, dimension_line_overshoot=1, arrowL1=3, arrowL2=1, arrowW=2, strokeWidth=0.5, lineColor='blue', arrow_scheme='auto',
+                               gap_datum_points = 2, dimension_line_overshoot=1, arrowL1=3, arrowL2=1, arrowW=2,
+                               strokeWidth=0.5, lineColor='blue', arrow_scheme='auto',
                                halfDimension_linear=False, textRenderer= defaultTextRenderer):
     lines = []
     p1 = numpy.array([ x1, y1 ])

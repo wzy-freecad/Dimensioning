@@ -14,14 +14,14 @@ class text_widget:
     def valueChanged( self, arg1):
         d.text = arg1
     def generateWidget( self, dimensioningProcess ):
-        self.lineEdit = QtGui.QLineEdit()
+        self.lineEdit = QtWidgets.QLineEdit()
         self.lineEdit.setText('text')
         d.text = 'text'
         self.lineEdit.textChanged.connect(self.valueChanged)
         return self.lineEdit
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyString", 'text', 'Parameters')
-        obj.text = d.text.encode('utf8') 
+        obj.text = d.text
     def get_values_from_dimension_object( self, obj, KWs ):
         KWs['text'] =  obj.text #should be unicode
 d.dialogWidgets.append( text_widget() )
@@ -29,7 +29,7 @@ class rotation_widget:
     def valueChanged( self, arg1):
         d.rotation = arg1
     def generateWidget( self, dimensioningProcess ):
-        self.spinbox = QtGui.QDoubleSpinBox()
+        self.spinbox = QtWidgets.QDoubleSpinBox()
         self.spinbox.setValue(0)
         d.rotation = 0
         self.spinbox.setMinimum( -180 )

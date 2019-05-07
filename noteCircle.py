@@ -31,7 +31,7 @@ class NoteCircleText_widget:
         d.noteCircleText = '%i' % arg1
         self.counter = arg1 + 1
     def generateWidget( self, dimensioningProcess ):
-        self.spinbox = QtGui.QSpinBox()
+        self.spinbox = QtWidgets.QSpinBox()
         self.spinbox.setValue(self.counter)
         d.noteCircleText = '%i' % self.counter
         self.spinbox.valueChanged.connect(self.valueChanged)
@@ -39,7 +39,7 @@ class NoteCircleText_widget:
         return DimensioningTaskDialog_generate_row_hbox('no.', self.spinbox)
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyString", 'noteText', 'Parameters')
-        obj.noteText = d.noteCircleText.encode('utf8') 
+        obj.noteText = d.noteCircleText
     def get_values_from_dimension_object( self, obj, KWs ):
         KWs['noteCircleText'] =  obj.noteText #should be unicode
 d.dialogWidgets.append( NoteCircleText_widget() )

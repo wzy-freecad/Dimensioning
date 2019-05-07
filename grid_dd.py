@@ -3,8 +3,8 @@ from PySide2 import QtGui, QtCore, QtSvg, QtWidgets
 
 #code duplicated from dimensioning .py
 def DimensioningTaskDialog_generate_row_hbox( label, inputWidget ):
-    hbox = QtGui.QHBoxLayout()
-    hbox.addWidget( QtGui.QLabel(label) )
+    hbox = QtWidgets.QHBoxLayout()
+    hbox.addWidget( QtWidgets.QLabel(label) )
     hbox.addStretch(1)
     if inputWidget != None:
         hbox.addWidget(inputWidget)
@@ -57,7 +57,7 @@ class GridOptionsGroupBox:
         self.dd_parms.SetFloat( 'grid_line_width',  newValue )
         dimensioningGrid.update()
     def specifyNewGridColor(self):
-        color = QtGui.QColorDialog.getColor( self.colorRect.brush().color() )
+        color = QtWidgets.QColorDialog.getColor( self.colorRect.brush().color() )
         if color.isValid():
             self.colorRect.setBrush( QtGui.QBrush(color) )
             self.dd_parms.SetUnsigned( 'grid_color', RGBtoUnsigned(color.red(), color.green(), color.blue()) )
@@ -65,21 +65,21 @@ class GridOptionsGroupBox:
 
     def generateWidget(self, dimensioningProcess):
         self.dimensioningProcess = dimensioningProcess
-        groupbox = QtGui.QGroupBox("Grid Options")
+        groupbox = QtWidgets.QGroupBox("Grid Options")
         groupbox.setCheckable( True ) 
         groupbox.toggled.connect( self.groupBoxToggled )
         self.groupbox = groupbox
         checked = self.dd_parms.GetBool("show_grid_options",True)
         groupbox.setChecked(checked)
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
 
-        gridOn_checkbox = QtGui.QCheckBox('grid on')
+        gridOn_checkbox = QtWidgets.QCheckBox('grid on')
         gridOn_checkbox.setChecked( self.dd_parms.GetBool( 'grid_on', False ))
         gridOn_checkbox.stateChanged.connect( self.gridOn_checkbox_stateChanged )
         vbox.addWidget( gridOn_checkbox )
         self.gridOn_checkbox =  gridOn_checkbox
 
-        spacingSpinbox = QtGui.QDoubleSpinBox()
+        spacingSpinbox = QtWidgets.QDoubleSpinBox()
         spacingSpinbox.setValue( self.dd_parms.GetFloat( 'grid_spacing', default_grid_spacing )  )
         spacingSpinbox.setMinimum( 0.01 )
         spacingSpinbox.setDecimals( 2 )
@@ -89,7 +89,7 @@ class GridOptionsGroupBox:
         vbox.addLayout( DimensioningTaskDialog_generate_row_hbox('spacing', spacingSpinbox) )
         self.spacingSpinbox = spacingSpinbox
 
-        displayPeriodSpinbox = QtGui.QSpinBox()
+        displayPeriodSpinbox = QtWidgets.QSpinBox()
         displayPeriodSpinbox.setValue( min( self.dd_parms.GetInt( 'grid_display_period', default_grid_display_period  ), 200)  )
         displayPeriodSpinbox.setMinimum( 0 )
         displayPeriodSpinbox.valueChanged.connect( self.displayPeriodSpinbox_valueChanged )
@@ -114,7 +114,7 @@ class GridOptionsGroupBox:
         colorBox.setVerticalScrollBarPolicy( QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff )
         vbox.addLayout(  DimensioningTaskDialog_generate_row_hbox( 'color', colorBox ) )
 
-        lineWidthSpinbox = QtGui.QDoubleSpinBox()
+        lineWidthSpinbox = QtWidgets.QDoubleSpinBox()
         lineWidthSpinbox.setValue( self.dd_parms.GetFloat( 'grid_line_width', default_grid_line_width )  )
         lineWidthSpinbox.setMinimum( 0. )
         lineWidthSpinbox.setDecimals( 2 )

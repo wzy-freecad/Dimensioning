@@ -29,7 +29,7 @@ def findUnusedObjectName(base, counterStart=1, fmt='%03i'):
 def errorMessagebox_with_traceback(title='Error'):
     'for also those PySide linked codes where the Python debugger does not work...'
     App.Console.PrintError(traceback.format_exc())
-    QtGui.QMessageBox.critical( 
+    QtWidgets.QMessageBox.critical(
         # QtGui.qApp.activeWindow(),
         FreeCADGui.getMainWindow(),
         title,
@@ -46,12 +46,12 @@ def getDrawingPageGUIVars():
     # get the active window
     mw = FreeCADGui.getMainWindow()
     # mw = QtGui.qApp.activeWindow()
-    MdiArea = [c for c in mw.children() if isinstance(c,QtGui.QMdiArea)][0]
+    MdiArea = [c for c in mw.children() if isinstance(c,QtWidgets.QMdiArea)][0]
 
     try:
         subWinMW = MdiArea.activeSubWindow().children()[3]
     except AttributeError:
-        QtGui.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
+        QtWidgets.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
         # QtGui.QMessageBox.information( QtGui.qApp.activeWindow(), notDrawingPage_title, notDrawingPage_msg  )
         raise ValueError(notDrawingPage_title)
 
@@ -61,11 +61,11 @@ def getDrawingPageGUIVars():
     # To find the page we are on, we get all the pages which have the same label as
     # the current object. In theory there should therefore only be one page in the list
     # returned by getObjectsByLabel, so we'll just take the first in the list
-    pages = App.ActiveDocument.getObjectsByLabel( subWinMW.objectName().encode('utf8') )
+    pages = App.ActiveDocument.getObjectsByLabel( subWinMW.objectName() )
 
     # raise an error explaining that the page wasn't found if the list is empty
     if len(pages) != 1:
-        QtGui.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
+        QtWidgets.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
         # QtGui.QMessageBox.information( QtGui.qApp.activeWindow(), notDrawingPage_title, notDrawingPage_msg  )
         raise ValueError(notDrawingPage_title)
 
@@ -75,7 +75,7 @@ def getDrawingPageGUIVars():
     try:
         graphicsView = [ c for c in subWinMW.children() if isinstance(c,QtWidgets.QGraphicsView)][0]
     except IndexError:
-        QtGui.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
+        QtWidgets.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
         # QtGui.QMessageBox.information( QtGui.qApp.activeWindow(), notDrawingPage_title, notDrawingPage_msg  )
         raise ValueError(notDrawingPage_title)
     graphicsScene = graphicsView.scene()
@@ -148,25 +148,29 @@ class DimensioningProcessTracker:
 
     def registerPreference( self, name, defaultValue=None, label=None, kind='guess', **extraKWs):
         if name not in dimensioningPreferences:
-            if defaultValue == None:
+            if defaultValue is None:
                 raise ValueError("registerPreferenceError: %s default required in first definition" % name )
             if type(defaultValue) == str:
                 # defaultValue = unicode(defaultValue, 'utf8')
                 pass
             class_key = kind if kind != 'guess' else str(type(defaultValue))
             if class_key in DimensioningPreferenceClasses:
-                dimensioningPreferences[name] = DimensioningPreferenceClasses[class_key](name, defaultValue, label, **extraKWs)
+                dimensioningPreferences[name] = DimensioningPreferenceClasses[class_key](
+                    name, defaultValue, label, **extraKWs
+                )
             else:
-                App.Console.PrintError("registerPreferenceError: %s : defaultValue %s, kind %s [class_key %s] not understood, ignoring!\n" % (name, defaultValue, kind, class_key) )
+                App.Console.PrintError("registerPreferenceError: %s : "
+                                       "defaultValue %s, kind %s [class_key %s] not understood,"
+                                       " ignoring!\n" % (name, defaultValue, kind, class_key) )
                 return 
-        elif defaultValue != None:
+        elif defaultValue is not None:
             raise ValueError("registerPreferenceError: default for %s redeclared" % name)
         self.preferences.append( dimensioningPreferences[name] )
 
 
 def DimensioningTaskDialog_generate_row_hbox( label, inputWidget ):
-    hbox = QtGui.QHBoxLayout()
-    hbox.addWidget( QtGui.QLabel(label) )
+    hbox = QtWidgets.QHBoxLayout()
+    hbox.addWidget( QtWidgets.QLabel(label) )
     hbox.addStretch(1)
     if inputWidget != None:
         hbox.addWidget(inputWidget)
@@ -184,7 +188,7 @@ class RepeatCheckBox:
         self.d.endFunction = self.endFunction if self.checkbox.isChecked() else None
         self.dd_parms.SetBool( self.parmName, c )
     def generateWidget( self, dimensioningProcess ):
-        self.checkbox = QtGui.QCheckBox('repeat')
+        self.checkbox = QtWidgets.QCheckBox('repeat')
         c = self.dd_parms.GetBool( self.parmName, self.defaultValue )
         self.checkbox.setChecked( c )
         self.d.endFunction = self.endFunction if self.checkbox.isChecked() else None
@@ -226,7 +230,7 @@ class DimensioningPreference_float(DimensioningPreference_prototype):
         self.spinbox.setValue( self.getDefaultValue() )
     def generateWidget( self, dimensioningProcess ):
         self.dimensioningProcess = dimensioningProcess
-        spinbox = QtGui.QDoubleSpinBox()
+        spinbox = QtWidgets.QDoubleSpinBox()
         spinbox.setValue( self.getDefaultValue() )
         spinbox.setMinimum( self.spinBox_min )
         spinbox.setSingleStep( self.spinBox_increment )
@@ -238,22 +242,25 @@ class DimensioningPreference_float(DimensioningPreference_prototype):
         obj.addProperty("App::PropertyFloat", self.name, self.category)
         KWs = self.dimensioningProcess.dimensionConstructorKWs
         setattr( obj, self.name, KWs[ self.name ] )
+DimensioningPreferenceClasses["<class 'float'>"] = DimensioningPreference_float
+DimensioningPreferenceClasses["<class 'int'>"] = DimensioningPreference_float
+
 DimensioningPreferenceClasses["<type 'float'>"] = DimensioningPreference_float
 DimensioningPreferenceClasses["<type 'int'>"] = DimensioningPreference_float
 
 
 class DimensioningPreference_unicode(DimensioningPreference_prototype):
     def getDefaultValue(self):
-        encoded_value = self.dd_parms.GetString( self.name, self.defaultValue.encode('utf8') ) 
+        encoded_value = self.dd_parms.GetString( self.name, self.defaultValue )
         # return unicode( encoded_value, 'utf8' )
         return encoded_value
     def updateDefault(self):
-        self.dd_parms.SetString( self.name,  self.dimensioningProcess.dimensionConstructorKWs[ self.name ].encode('utf8') )
+        self.dd_parms.SetString( self.name,  self.dimensioningProcess.dimensionConstructorKWs[ self.name ] )
     def revertToDefault( self ):
         self.textbox.setText( self.getDefaultValue() )
     def generateWidget( self, dimensioningProcess ):
         self.dimensioningProcess = dimensioningProcess
-        textbox = QtGui.QLineEdit()
+        textbox = QtWidgets.QLineEdit()
         #debugPrint(1,self.getDefaultValue() )
         textbox.setText( self.getDefaultValue() )
         textbox.textChanged.connect( self.valueChanged )
@@ -262,19 +269,20 @@ class DimensioningPreference_unicode(DimensioningPreference_prototype):
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyString", self.name, self.category)
         KWs = self.dimensioningProcess.dimensionConstructorKWs
-        setattr( obj, self.name, KWs[ self.name ].encode('utf8') )
+        setattr( obj, self.name, KWs[ self.name ] )
     def get_values_from_dimension_object( self, obj, KWs ):
         #KWs[self.name] =  unicode( getattr( obj, self.name ), 'utf8'  )
         KWs[self.name] =  getattr( obj, self.name )
         if not type(KWs[self.name]) == unicode:
             raise ValueError("type(KWs[%s]) != unicode but == %s" % (self.name, type(KWs[self.name]) ))
 DimensioningPreferenceClasses["<type 'unicode'>"] = DimensioningPreference_unicode
+DimensioningPreferenceClasses["<class 'str'>"] = DimensioningPreference_unicode
 
 class DimensioningPreference_choice(DimensioningPreference_unicode):
     def valueChanged( self, value ):
         self.dimensioningProcess.dimensionConstructorKWs[ self.name ] = self.combobox.currentText()
     def getDefaultValue(self):
-        encoded_value = self.dd_parms.GetString( self.name, self.defaultValue[0].encode('utf8') ) 
+        encoded_value = self.dd_parms.GetString( self.name, self.defaultValue[0] )
         # return unicode( encoded_value, 'utf8' )
         return encoded_value
     def revertToDefault( self ):
@@ -284,7 +292,7 @@ class DimensioningPreference_choice(DimensioningPreference_unicode):
             pass
     def generateWidget( self, dimensioningProcess ):
         self.dimensioningProcess = dimensioningProcess
-        combobox = QtGui.QComboBox()
+        combobox = QtWidgets.QComboBox()
         for i in self.defaultValue:
             combobox.addItem(i)
         try:
@@ -296,9 +304,9 @@ class DimensioningPreference_choice(DimensioningPreference_unicode):
         return  DimensioningTaskDialog_generate_row_hbox( self.label, combobox )
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyEnumeration", self.name, self.category)
-        setattr( obj, self.name, [ v.encode('utf8') for v in  self.defaultValue ])
+        setattr( obj, self.name, [ v for v in  self.defaultValue ])
         KWs = self.dimensioningProcess.dimensionConstructorKWs
-        setattr( obj, self.name, KWs[ self.name ].encode('utf8') )
+        setattr( obj, self.name, KWs[ self.name ] )
     def get_values_from_dimension_object( self, obj, KWs ):
         # KWs[self.name] =  unicode( getattr( obj, self.name ), 'utf8'  )
         KWs[self.name] = getattr( obj, self.name )
@@ -316,7 +324,7 @@ class DimensioningPreference_boolean(DimensioningPreference_prototype):
         self.checkbox.setChecked( self.getDefaultValue() )
     def generateWidget( self, dimensioningProcess ):
         self.dimensioningProcess = dimensioningProcess
-        self.checkbox = QtGui.QCheckBox(self.label)
+        self.checkbox = QtWidgets.QCheckBox(self.label)
         self.revertToDefault()
         self.checkbox.stateChanged.connect( self.valueChanged )
         return  self.checkbox
@@ -324,6 +332,7 @@ class DimensioningPreference_boolean(DimensioningPreference_prototype):
         obj.addProperty("App::PropertyBool", self.name, self.category)
         KWs = self.dimensioningProcess.dimensionConstructorKWs
         setattr( obj, self.name, KWs[ self.name ] )
+DimensioningPreferenceClasses["<class 'bool'>"] = DimensioningPreference_boolean
 DimensioningPreferenceClasses["<type 'bool'>"] = DimensioningPreference_boolean
 
 
@@ -344,7 +353,7 @@ class DimensioningPreference_color(DimensioningPreference_prototype):
         self.graphicsScene = graphicsScene #protect from garbage collector
         self.colorRect = rect
     def clickFun(self):
-        color = QtGui.QColorDialog.getColor( self.colorRect.brush().color() )
+        color = QtWidgets.QColorDialog.getColor( self.colorRect.brush().color() )
         if color.isValid():
             self.colorRect.setBrush( QtGui.QBrush(color) )
             self.dimensioningProcess.dimensionConstructorKWs[ self.name ] = 'rgb(%i,%i,%i)' % (color.red(), color.green(), color.blue() )
@@ -370,7 +379,7 @@ class DimensioningPreference_color(DimensioningPreference_prototype):
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyString", self.name, self.category)
         KWs = self.dimensioningProcess.dimensionConstructorKWs
-        setattr( obj, self.name, KWs[ self.name ].encode('utf8') )
+        setattr( obj, self.name, KWs[ self.name ] )
     def get_values_from_dimension_object( self, obj, KWs ):
         KWs[self.name] =  getattr( obj, self.name )
 
@@ -387,7 +396,7 @@ class DimensioningPreference_font(DimensioningPreference_color):
         textRenderer.fill = 'rgb(%i,%i,%i)' % (color.red(), color.green(), color.blue() )
 
     def clickFun(self):
-        color = QtGui.QColorDialog.getColor( self.colorRect.brush().color() )
+        color = QtWidgets.QColorDialog.getColor( self.colorRect.brush().color() )
         if color.isValid():
             self.colorRect.setBrush( QtGui.QBrush(color) )
             self.update_dimensionConstructorKWs()
@@ -418,11 +427,11 @@ class DimensioningPreference_font(DimensioningPreference_color):
         colorBox.setMaximumHeight( height )
         colorBox.setHorizontalScrollBarPolicy( QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff )
         colorBox.setVerticalScrollBarPolicy( QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff )
-        self.family_textbox = QtGui.QLineEdit()
-        self.size_textbox = QtGui.QLineEdit()
+        self.family_textbox = QtWidgets.QLineEdit()
+        self.size_textbox = QtWidgets.QLineEdit()
 
-        groupbox = QtGui.QGroupBox(self.label)
-        hbox = QtGui.QHBoxLayout()
+        groupbox = QtWidgets.QGroupBox(self.label)
+        hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget( self.family_textbox )
         hbox.addStretch(1)
         hbox.addWidget( self.size_textbox )
@@ -438,9 +447,9 @@ class DimensioningPreference_font(DimensioningPreference_color):
         obj.addProperty("App::PropertyString", self.name+ '_size', self.category)
         obj.addProperty("App::PropertyString", self.name+ '_color', self.category)
         textRenderer = self.dimensioningProcess.dimensionConstructorKWs[ self.name ]
-        setattr( obj, self.name + '_family', textRenderer.font_family.encode('utf8') )
-        setattr( obj, self.name + '_size', textRenderer.font_size.encode('utf8') )
-        setattr( obj, self.name + '_color', textRenderer.fill.encode('utf8') )
+        setattr( obj, self.name + '_family', textRenderer.font_family )
+        setattr( obj, self.name + '_size', textRenderer.font_size )
+        setattr( obj, self.name + '_color', textRenderer.fill )
         
     def get_values_from_dimension_object( self, obj, KWs ):
         family = getattr( obj, self.name + '_family')
@@ -452,7 +461,7 @@ DimensioningPreferenceClasses["font"] = DimensioningPreference_font
 
 class DimensioningPreference_string_list(DimensioningPreference_prototype):
     def val_to_FreeCAD_parm( self, val ):
-        return '\n'.join(text.encode('utf8') for text in val )
+        return '\n'.join(text for text in val )
     def FreeCAD_parm_to_val( self, FreeCAD_parm ):
         # return [ unicode( line, 'utf8' ) for line in FreeCAD_parm.split('\n') ]
         return [ line for line in FreeCAD_parm.split('\n') ]
@@ -468,7 +477,7 @@ class DimensioningPreference_string_list(DimensioningPreference_prototype):
         self.set_textbox_text( self.getDefaultValue() )
     def generateWidget( self, dimensioningProcess ):
         self.dimensioningProcess = dimensioningProcess
-        self.textbox = QtGui.QTextEdit()
+        self.textbox = QtWidgets.QTextEdit()
         self.revertToDefault()
         self.textbox.textChanged.connect( self.textChanged )
         return DimensioningTaskDialog_generate_row_hbox( self.label, self.textbox )
@@ -477,7 +486,7 @@ class DimensioningPreference_string_list(DimensioningPreference_prototype):
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyStringList", self.name, self.category)
         KWs = self.dimensioningProcess.dimensionConstructorKWs
-        setattr( obj, self.name, [ v.encode('utf8') for v in KWs[ self.name ] ] )
+        setattr( obj, self.name, [ v for v in KWs[ self.name ] ] )
     def get_values_from_dimension_object( self, obj, KWs ):
         KWs[self.name] = getattr( obj, self.name )
 DimensioningPreferenceClasses['string_list'] = DimensioningPreference_string_list
@@ -535,7 +544,7 @@ class UnitSelectionWidget:
 
     def generateWidget(self, dimensioningProcess):
         self.dimensioningProcess = dimensioningProcess
-        groupbox = QtGui.QGroupBox("Unit Options")
+        groupbox = QtWidgets.QGroupBox("Unit Options")
         groupbox.setCheckable( True ) 
         groupbox.toggled.connect( self.groupBoxToggled )
         self.groupbox = groupbox
@@ -543,8 +552,8 @@ class UnitSelectionWidget:
         groupbox.setChecked(checked)
         #self.groupBoxToggled( checked )
         #groupbox.setCheckState( QtCore.Qt.CheckState.Checked )
-        vbox = QtGui.QVBoxLayout()
-        unitSelected = QtGui.QComboBox()
+        vbox = QtWidgets.QVBoxLayout()
+        unitSelected = QtWidgets.QComboBox()
         unitSelected.addItem('Edit->Preference->Unit')
         unitSelected.addItem('mm')
         unitSelected.addItem('inch')
@@ -554,7 +563,7 @@ class UnitSelectionWidget:
         unitSelected.currentIndexChanged.connect( self.settingsChanged )
         vbox.addWidget( unitSelected )
         self.unitSelected_combobox = unitSelected
-        spinbox = QtGui.QDoubleSpinBox()
+        spinbox = QtWidgets.QDoubleSpinBox()
         spinbox.setValue( self.customScaleValue )
         spinbox.setMinimum( 0 )
         spinbox.setDecimals( 6 )
@@ -570,8 +579,8 @@ class UnitSelectionWidget:
     def add_properties_to_dimension_object( self, obj ):
         KWs = self.dimensioningProcess.dimensionConstructorKWs
         obj.addProperty("App::PropertyEnumeration", 'unit_scheme', 'Units')
-        obj.unit_scheme = [ v.encode('utf8') for v in ['Edit->Preference->Unit','mm','inch','m','custom'] ]
-        obj.unit_scheme = self.unitSelected_combobox.currentText().encode('utf8')
+        obj.unit_scheme = [ v for v in ['Edit->Preference->Unit','mm','inch','m','custom'] ]
+        obj.unit_scheme = self.unitSelected_combobox.currentText()
         obj.addProperty("App::PropertyFloat", 'unit_custom_scale', 'Units')
         obj.unit_custom_scale = self.customScaleValue
 
@@ -617,30 +626,30 @@ class DimensioningTaskDialogForm(QtWidgets.QWidget):
         self.initUI()
         
     def initUI(self):
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         for parm in self.dd_parameters:
             w = parm.generateWidget(self.dd_dimensiongProcess )
-            if isinstance(w, QtGui.QLayout):
+            if isinstance(w, QtWidgets.QLayout):
                 vbox.addLayout( w )
             else:
                 vbox.addWidget( w )
         if len( self.dd_preferences ) > 0:
-            preferenceGroupbox = QtGui.QGroupBox("Preferences")
-            vbox_pref = QtGui.QVBoxLayout()
+            preferenceGroupbox = QtWidgets.QGroupBox("Preferences")
+            vbox_pref = QtWidgets.QVBoxLayout()
             for pref in self.dd_preferences:
                 row =  pref.generateWidget(self.dd_dimensiongProcess )
-                if isinstance(row, QtGui.QLayout):
+                if isinstance(row, QtWidgets.QLayout):
                     vbox_pref.addLayout( row )
                 else:
                     vbox_pref.addWidget( row )
             preferenceGroupbox.setLayout(vbox_pref)
             vbox.addWidget(preferenceGroupbox)
 
-            #buttonRevert = QtGui.QPushButton("Revert to default")
+            #buttonRevert = QtWidgets.QPushButton("Revert to default")
             #buttonRevert.clicked.connect( self.revertToDefaults )
             #vbox.addWidget( buttonRevert )
 
-            buttonSave = QtGui.QPushButton("Set as default")
+            buttonSave = QtWidgets.QPushButton("Set as default")
             buttonSave.clicked.connect( self.updateDefaults )
             vbox.addWidget( buttonSave )
         self.setLayout(vbox)            
@@ -734,7 +743,7 @@ def printGraphicsViewInfo( drawingVars ):
 
 class helpCommand:
     def Activated(self):
-        QtGui.QMessageBox.information( 
+        QtWidgets.QMessageBox.information(
             # QtGui.qApp.activeWindow(),
             FreeCADGui.getMainWindow(),
             'Drawing Dimensioning Help', 

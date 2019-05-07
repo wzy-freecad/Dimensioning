@@ -48,14 +48,14 @@ class boundText_widget:
     def valueChanged( self, arg1):
         setattr(d, self.name, arg1)
     def generateWidget( self, dimensioningProcess ):
-        self.lineEdit = QtGui.QLineEdit()
+        self.lineEdit = QtWidgets.QLineEdit()
         self.lineEdit.setText(self.default)
         setattr(d, self.name, self.default)
         self.lineEdit.textChanged.connect(self.valueChanged)
         return DimensioningTaskDialog_generate_row_hbox(self.name, self.lineEdit)
     def add_properties_to_dimension_object( self, obj ):
         obj.addProperty("App::PropertyString",  self.name+'_text', 'Parameters')
-        setattr( obj, self.name+'_text', getattr( d, self.name ).encode('utf8') )
+        setattr( obj, self.name+'_text', getattr( d, self.name ) )
     def get_values_from_dimension_object( self, obj, KWs ):
         KWs['text_'+self.name] =  getattr( obj, self.name+'_text')  #should be unicode
 
