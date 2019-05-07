@@ -2,7 +2,7 @@ import dimensioning #QtCore.QResource.registerResource happens in there
 
 class DrawingDimensioningWorkbench (Workbench):
     Icon = ':/dd/icons/linearDimension.svg'
-    MenuText = 'Drawing Dimensioning'
+    MenuText = 'Dimensioning'
     def Initialize(self):
         import linearDimension
         import linearDimension_stack
