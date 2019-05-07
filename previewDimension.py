@@ -154,7 +154,7 @@ class DimensionPreviewRect(QtWidgets.QGraphicsRectItem):
                 preview.drawingVars.height,
                 self.dimensionSvgFun( x, y )
             )
-            if isinstance(XML, unicode): 
+            if isinstance(XML, str):
                 XML = XML
             debugPrint(5, XML)
             preview.SVGRenderer.load( QtCore.QByteArray( XML ) )

@@ -273,8 +273,8 @@ class DimensioningPreference_unicode(DimensioningPreference_prototype):
     def get_values_from_dimension_object( self, obj, KWs ):
         #KWs[self.name] =  unicode( getattr( obj, self.name ), 'utf8'  )
         KWs[self.name] =  getattr( obj, self.name )
-        if not type(KWs[self.name]) == unicode:
-            raise ValueError("type(KWs[%s]) != unicode but == %s" % (self.name, type(KWs[self.name]) ))
+        if not isinstance(KWs[self.name], str):
+            raise ValueError("type(KWs[%s]) != unicode or str but == %s" % (self.name, type(KWs[self.name]) ))
 DimensioningPreferenceClasses["<type 'unicode'>"] = DimensioningPreference_unicode
 DimensioningPreferenceClasses["<class 'str'>"] = DimensioningPreference_unicode
 
@@ -495,10 +495,12 @@ class DimensioningPreference_float_list(DimensioningPreference_string_list):
     def val_to_FreeCAD_parm( self, val ):
         return '\n'.join(map(str, val))
     def FreeCAD_parm_to_val( self, FreeCAD_parm ):
-        return map(float, FreeCAD_parm.split('\n'))
+        return list(map(float, FreeCAD_parm.split('\n')))
     def textChanged( self, arg1=None):
         try:
-            self.dimensioningProcess.dimensionConstructorKWs[ self.name ] = map(float, [v for v in self.textbox.toPlainText().split('\n') if len(v.strip())>0])
+            self.dimensioningProcess.dimensionConstructorKWs[ self.name ] = list(map(
+                float, [v for v in self.textbox.toPlainText().split('\n') if len(v.strip())>0]
+            ))
             #debugPrint(1, str(self.dimensioningProcess.dimensionConstructorKWs[ self.name ]))
         except:
             App.Console.PrintError(traceback.format_exc())

@@ -118,7 +118,7 @@ class SvgXMLTreeNode:
         sx, sy = 1.0, 1.0
         if 'transform=' in self.header:
             if 'rotate(' in self.header:
-                rotateParms = map(float, extractParms(self.header, 0, 'rotate(', ', ', ')'))
+                rotateParms = list(map(float, extractParms(self.header, 0, 'rotate(', ', ', ')')))
                 if len(rotateParms) == 3:
                     rotateDegrees, rx, ry = rotateParms
                 else:
@@ -130,7 +130,7 @@ class SvgXMLTreeNode:
             if 'translate(' in self.header:
                 tx, ty = map(float, extractParms(self.header, 0, 'translate(', ', ', ')'))
             if 'scale(' in self.header:
-                scaleParms = map(float, extractParms(self.header, 0, 'scale(', ', ', ')'))
+                scaleParms = list(map(float, extractParms(self.header, 0, 'scale(', ', ', ')')))
                 if len(scaleParms) == 2:
                     sx, sy = scaleParms
                 else:
@@ -167,13 +167,13 @@ class SvgXMLTreeNode:
                 tx, ty = map(float, extractParms(self.header, 0, 'translate(', ', ', ')'))
                 
             if 'scale(' in self.header:
-                scaleParms = map(float, extractParms(self.header, 0, 'scale(', ', ', ')'))
+                scaleParms = list(map(float, extractParms(self.header, 0, 'scale(', ', ', ')')))
                 if len(scaleParms) == 2:
                     sx, sy = scaleParms
                 else:
                     sx, sy = scaleParms[0], scaleParms[0]
             if 'rotate(' in self.header:
-                rotateParms = map(float, extractParms(self.header, 0, 'rotate(', ', ', ')'))
+                rotateParms = list(map(float, extractParms(self.header, 0, 'rotate(', ', ', ')')))
                 if len(rotateParms) == 3:
                     rotateDegrees, rx, ry = rotateParms
                 else:
@@ -198,7 +198,7 @@ class SvgXMLTreeNode:
     def scaling(self):
         sx = 1.0
         if 'scale(' in self.header:
-            sx = map(float, extractParms(self.header, 0, 'scale(', ',', ')'))[0]
+            sx = list(map(float, extractParms(self.header, 0, 'scale(', ',', ')')))[0]
         if len(self.children) == 1:
             sx_child = self.children[0].scaling()
         else:
@@ -209,7 +209,7 @@ class SvgXMLTreeNode:
         'other scaling works only for drawingObject.ViewResult groups...'
         if 'transform=' in self.header:
             if 'scale(' in self.header:
-                scaleParms = map(float, extractParms(self.header, 0, 'scale(', ', ', ')'))
+                scaleParms = list(map(float, extractParms(self.header, 0, 'scale(', ', ', ')')))
                 if len(scaleParms) == 2:
                     sx, sy = scaleParms
                 else:

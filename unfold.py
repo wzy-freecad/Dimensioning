@@ -14,7 +14,7 @@ crossProduct = numpy.cross
 d = DimensioningProcessTracker()
 
 def unfold(faces_org):
-    faces = map(FaceWrapper, faces_org)
+    faces = list(map(FaceWrapper, faces_org))
     projection = Projection()
     for ind, working_face in enumerate(faces):
         if projection.empty():

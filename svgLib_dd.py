@@ -547,7 +547,7 @@ class SvgPolygon:
         assert isinstance(element, SvgXMLTreeNode)
         self.points = []
         self.lines = []
-        points_raw = map( float, element.parms['points'].replace(',',' ').split() )
+        points_raw = list(map( float, element.parms['points'].replace(',',' ').split() ))
         X = []
         Y = []
         for i in range(len(points_raw)/2):
