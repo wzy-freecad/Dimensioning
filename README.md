@@ -20,7 +20,7 @@ On other Linux distros try to install manually via Terminal and git, replacing *
 $ sudo apt-get install git python-numpy python-pyside
 $ mkdir ~/.FreeCAD/Mod
 $ cd ~/.FreeCAD/Mod
-$ git clone https://github.com/hamish2014/FreeCAD_drawing_dimensioning.git
+$ git clone https://github.com/wzy-freecad/Dimensioning.git
 $ cd FreeCAD_drawing_dimensioning
 $ git checkout 0.18/master
 ```
@@ -28,7 +28,7 @@ $ git checkout 0.18/master
 Once installed, use git to easily update to the latest version:
 
 ```bash
-$ cd ~/.FreeCAD/Mod/FreeCAD_drawing_dimensioning
+$ cd ~/.FreeCAD/Mod/Dimensioning
 $ git pull
 $ rm *.pyc
 ```
@@ -55,4 +55,4 @@ Wiki
 ----
 
 For instructions on usage of the workbench refer to the wiki (link on top of the page)
-[https://github.com/hamish2014/FreeCAD_drawing_dimensioning/wiki]
+[https://github.com/wzy-freecad/Dimensioning/wiki]
