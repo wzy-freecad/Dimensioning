@@ -2,18 +2,18 @@ print('Testing dimensionSvgConstructor.py centerLines')
 
 from dimensionSvgConstructor import *
 import sys
-from PySide import QtGui, QtCore, QtSvg
+from PySide2 import QtGui, QtCore, QtSvg, QtWidgets
 
-app = QtGui.QApplication(sys.argv)
+app = QtWidgets.QApplication(sys.argv)
 width = 640
 height = 480
 
-graphicsScene = QtGui.QGraphicsScene(0,0,width,height)
+graphicsScene = QtWidgets.QGraphicsScene(0,0,width,height)
 graphicsScene.addText("Center Lines testing app.\nEsc to Exit")
 
 dimensions = []
 
-class DimensioningRect(QtGui.QGraphicsRectItem):
+class DimensioningRect(QtWidgets.QGraphicsRectItem):
     def __init__(self,*args):
         super(DimensioningRect, self).__init__(*args)
         svgRenderer = QtSvg.QSvgRenderer()
@@ -49,7 +49,7 @@ class DimensioningRect(QtGui.QGraphicsRectItem):
                 self.action_ind = 0
                 XML = centerLinesSVG( self.center, self.topLeft, self.bottomRight,
                                    **self.dim_svg_KWs )
-                if XML <> None:
+                if XML != None:
                     print(XML)
                     newSvg = QtSvg.QGraphicsSvgItem(  )
                     svgRenderer = QtSvg.QSvgRenderer()
@@ -69,7 +69,7 @@ class DimensioningRect(QtGui.QGraphicsRectItem):
                                       **self.dim_svg_KWs )
         elif self.action_ind == 2: # then placeDimensionText
             XML = centerLinesSVG( self.center, self.topLeft, [ x, y ], **self.dim_svg_KWs )
-        if XML <> None:
+        if XML != None:
             self.dimSVGRenderer.load( QtCore.QByteArray( XML ) )
             self.dimPreview.update()
             self.dimPreview.show()
@@ -90,10 +90,10 @@ class DimensioningRect(QtGui.QGraphicsRectItem):
 
 dimensioningRect = DimensioningRect(0,0,width,height)
 dimensioningRect.setAcceptHoverEvents(True)
-dimensioningRect.setFlag( QtGui.QGraphicsItem.GraphicsItemFlag.ItemIsFocusable, True )
+dimensioningRect.setFlag( QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsFocusable, True )
 graphicsScene.addItem(dimensioningRect)    
 
-view = QtGui.QGraphicsView(graphicsScene)
+view = QtWidgets.QGraphicsView(graphicsScene)
 #view.scale(2, 2)
 view.show()
 

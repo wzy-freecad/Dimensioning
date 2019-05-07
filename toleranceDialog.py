@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtGui
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -60,11 +60,11 @@ class Ui_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Add tolerance", None))
-        self.placeButton.setText(QtGui.QApplication.translate("Dialog", "Add", None))
-        self.label.setText(QtGui.QApplication.translate("Dialog", "upper", None))
-        self.label_2.setText(QtGui.QApplication.translate("Dialog", "lower", None))
-        self.upperLineEdit.setText(QtGui.QApplication.translate("Dialog", "+0", None))
-        self.lowerLineEdit.setText(QtGui.QApplication.translate("Dialog", "-0", None))
-        self.label_3.setText(QtGui.QApplication.translate("Dialog", "font scale", None))
+        Dialog.setWindowTitle(QtWidgets.QApplication.translate("Dialog", "Add tolerance", None))
+        self.placeButton.setText(QtWidgets.QApplication.translate("Dialog", "Add", None))
+        self.label.setText(QtWidgets.QApplication.translate("Dialog", "upper", None))
+        self.label_2.setText(QtWidgets.QApplication.translate("Dialog", "lower", None))
+        self.upperLineEdit.setText(QtWidgets.QApplication.translate("Dialog", "+0", None))
+        self.lowerLineEdit.setText(QtWidgets.QApplication.translate("Dialog", "-0", None))
+        self.label_3.setText(QtWidgets.QApplication.translate("Dialog", "font scale", None))
 

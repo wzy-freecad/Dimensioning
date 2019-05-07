@@ -105,7 +105,9 @@ class Projection:
                                 cEdge = edge #edge to align with edgeToConnect to
                                 break
         if edgeToConnectTo == None:
-            raise NoCommonEdge, "%s has no common edge with the current projection" % str(face)
+            raise NoCommonEdge(
+                "%s has no common edge with the current projection" % str(face)
+            )
         debugPrint(4,"unfold.commonEdge curve 1 %s , curve 2 %s" % (cEdge.Curve, edgeToConnectTo.edge.Curve))
 
         faceWrapper.transform = pTransform2(
@@ -142,7 +144,7 @@ class Projection:
                             #debugPrint(2,'"insert_fold_lines adding folding line at a=%s b=%s"' % (a,b))
                         elif L1.pointOnLine(c) or L2.pointOnLine(c):
                             outsideSegments.append([a,b])
-                    if intersectionSegment <> None:
+                    if intersectionSegment != None:
                         L1.visible = False
                         L2.visible = False
                         self.foldingLines.append( FoldingLine( *intersectionSegment ) )
@@ -263,7 +265,7 @@ class pCircularArc:
         self.visible = True
 
     def svg(self, strokeWidth, lineColor):
-        if self.points[0] <> self.points[-1]:
+        if self.points[0] != self.points[-1]:
             r = self.radius
             largeArc = False #abs(dEnd - dStart) >= pi #given the construction method
             #determine sweep flag
@@ -395,7 +397,9 @@ def arccos2( v, allowableNumericalError=10**-1 ):
     elif abs(v) -1 < allowableNumericalError:
         return 0 if v > 0 else pi
     else:
-        raise ValueError,"arccos2 called with invalid input of %s" % v
+        raise ValueError(
+            "arccos2 called with invalid input of %s" % v
+        )
 
 def normalize( v ):
     return v / norm(v)
@@ -439,4 +443,6 @@ def arcsin2( v, allowableNumericalError=10**-1 ):
     elif abs(v) -1 < allowableNumericalError:
         return pi/2 if v > 0 else -pi/2
     else:
-        raise ValueError,"arcsin2 called with invalid input of %s" % v
+        raise ValueError(
+            "arcsin2 called with invalid input of %s" % v
+        )

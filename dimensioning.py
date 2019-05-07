@@ -1,7 +1,7 @@
 import numpy
 import FreeCAD as App
 import FreeCAD, FreeCADGui, Part, os
-from PySide import QtGui, QtCore, QtSvg
+from PySide2 import QtGui, QtCore, QtSvg, QtWidgets
 from svgLib_dd import SvgTextRenderer, SvgTextParser
 import traceback
 from grid_dd import gridOptionsGroupBox, dimensioningGrid
@@ -53,7 +53,7 @@ def getDrawingPageGUIVars():
     except AttributeError:
         QtGui.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
         # QtGui.QMessageBox.information( QtGui.qApp.activeWindow(), notDrawingPage_title, notDrawingPage_msg  )
-        raise ValueError, notDrawingPage_title
+        raise ValueError(notDrawingPage_title)
 
     # The drawing 'page' is really a group in the model tree
     # The objectName for the group object is not the same as the name shown in
@@ -64,20 +64,20 @@ def getDrawingPageGUIVars():
     pages = App.ActiveDocument.getObjectsByLabel( subWinMW.objectName().encode('utf8') )
 
     # raise an error explaining that the page wasn't found if the list is empty
-    if len(pages) <> 1:
+    if len(pages) != 1:
         QtGui.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
         # QtGui.QMessageBox.information( QtGui.qApp.activeWindow(), notDrawingPage_title, notDrawingPage_msg  )
-        raise ValueError, notDrawingPage_title
+        raise ValueError(notDrawingPage_title)
 
     # get the page from the list
     page = pages[0]
 
     try:
-        graphicsView = [ c for c in subWinMW.children() if isinstance(c,QtGui.QGraphicsView)][0]
+        graphicsView = [ c for c in subWinMW.children() if isinstance(c,QtWidgets.QGraphicsView)][0]
     except IndexError:
         QtGui.QMessageBox.information( FreeCADGui.getMainWindow(), notDrawingPage_title, notDrawingPage_msg  )
         # QtGui.QMessageBox.information( QtGui.qApp.activeWindow(), notDrawingPage_title, notDrawingPage_msg  )
-        raise ValueError, notDrawingPage_title
+        raise ValueError(notDrawingPage_title)
     graphicsScene = graphicsView.scene()
     pageRect = graphicsScene.items()[0] #hope this index does not change!
     width = pageRect.rect().width()
@@ -128,7 +128,7 @@ class DimensioningProcessTracker:
         self.dialogIconPath = dialogIconPath
         self.endFunction = endFunction
         extraWidgets = []
-        if self.endFunction <> None:
+        if self.endFunction != None:
             endFunction_parm_name = 'repeat_' + str(endFunction).split()[2]
             extraWidgets.append( RepeatCheckBox(self, endFunction_parm_name) )
             if grid:
@@ -138,7 +138,7 @@ class DimensioningProcessTracker:
         for pref in self.preferences:
             KWs[pref.name] = pref.getDefaultValue()
         self.dimensionConstructorKWs = KWs
-        if dialogTitle <> None:
+        if dialogTitle != None:
             self.taskDialog = DimensioningTaskDialog( self, dialogTitle, dialogIconPath, extraWidgets + self.dialogWidgets, self.preferences)
             FreeCADGui.Control.showDialog( self.taskDialog )
         else:
@@ -147,19 +147,20 @@ class DimensioningProcessTracker:
             dimensioningGrid.initialize( drawingVars )
 
     def registerPreference( self, name, defaultValue=None, label=None, kind='guess', **extraKWs):
-        if not dimensioningPreferences.has_key(name):
+        if name not in dimensioningPreferences:
             if defaultValue == None:
-                raise ValueError, "registerPreferenceError: %s default required in first definition" % name 
+                raise ValueError("registerPreferenceError: %s default required in first definition" % name )
             if type(defaultValue) == str:
-                defaultValue = unicode(defaultValue, 'utf8')
-            class_key = kind if kind <> 'guess' else str(type(defaultValue))
-            if DimensioningPreferenceClasses.has_key(class_key):
+                # defaultValue = unicode(defaultValue, 'utf8')
+                pass
+            class_key = kind if kind != 'guess' else str(type(defaultValue))
+            if class_key in DimensioningPreferenceClasses:
                 dimensioningPreferences[name] = DimensioningPreferenceClasses[class_key](name, defaultValue, label, **extraKWs)
             else:
                 App.Console.PrintError("registerPreferenceError: %s : defaultValue %s, kind %s [class_key %s] not understood, ignoring!\n" % (name, defaultValue, kind, class_key) )
                 return 
-        elif defaultValue <> None:
-            raise ValueError, "registerPreferenceError: default for %s redeclared" % name
+        elif defaultValue != None:
+            raise ValueError("registerPreferenceError: default for %s redeclared" % name)
         self.preferences.append( dimensioningPreferences[name] )
 
 
@@ -167,7 +168,7 @@ def DimensioningTaskDialog_generate_row_hbox( label, inputWidget ):
     hbox = QtGui.QHBoxLayout()
     hbox.addWidget( QtGui.QLabel(label) )
     hbox.addStretch(1)
-    if inputWidget <> None:
+    if inputWidget != None:
         hbox.addWidget(inputWidget)
     return hbox
 
@@ -197,7 +198,7 @@ class DimensioningPreference_prototype:
     def __init__(self, name, defaultValue, label, **extraKWs):
         self.name = name
         self.defaultValue = defaultValue
-        self.label = label if label <> None else name
+        self.label = label if label != None else name
         self.category = "Parameters" # for the freecad property category
         self.dd_parms = App.ParamGet("User parameter:BaseApp/Preferences/Mod/Drawing_Dimensioning")
         self.process_extraKWs(**extraKWs)
@@ -244,7 +245,8 @@ DimensioningPreferenceClasses["<type 'int'>"] = DimensioningPreference_float
 class DimensioningPreference_unicode(DimensioningPreference_prototype):
     def getDefaultValue(self):
         encoded_value = self.dd_parms.GetString( self.name, self.defaultValue.encode('utf8') ) 
-        return unicode( encoded_value, 'utf8' )
+        # return unicode( encoded_value, 'utf8' )
+        return encoded_value
     def updateDefault(self):
         self.dd_parms.SetString( self.name,  self.dimensioningProcess.dimensionConstructorKWs[ self.name ].encode('utf8') )
     def revertToDefault( self ):
@@ -265,7 +267,7 @@ class DimensioningPreference_unicode(DimensioningPreference_prototype):
         #KWs[self.name] =  unicode( getattr( obj, self.name ), 'utf8'  )
         KWs[self.name] =  getattr( obj, self.name )
         if not type(KWs[self.name]) == unicode:
-            raise ValueError,"type(KWs[%s]) != unicode but == %s" % (self.name, type(KWs[self.name]) ) 
+            raise ValueError("type(KWs[%s]) != unicode but == %s" % (self.name, type(KWs[self.name]) ))
 DimensioningPreferenceClasses["<type 'unicode'>"] = DimensioningPreference_unicode
 
 class DimensioningPreference_choice(DimensioningPreference_unicode):
@@ -273,7 +275,8 @@ class DimensioningPreference_choice(DimensioningPreference_unicode):
         self.dimensioningProcess.dimensionConstructorKWs[ self.name ] = self.combobox.currentText()
     def getDefaultValue(self):
         encoded_value = self.dd_parms.GetString( self.name, self.defaultValue[0].encode('utf8') ) 
-        return unicode( encoded_value, 'utf8' )
+        # return unicode( encoded_value, 'utf8' )
+        return encoded_value
     def revertToDefault( self ):
         try:
             combobox.setCurrentIndex( self.defaultValue.index(self.getDefaultValue()) )
@@ -297,7 +300,8 @@ class DimensioningPreference_choice(DimensioningPreference_unicode):
         KWs = self.dimensioningProcess.dimensionConstructorKWs
         setattr( obj, self.name, KWs[ self.name ].encode('utf8') )
     def get_values_from_dimension_object( self, obj, KWs ):
-        KWs[self.name] =  unicode( getattr( obj, self.name ), 'utf8'  )
+        # KWs[self.name] =  unicode( getattr( obj, self.name ), 'utf8'  )
+        KWs[self.name] = getattr( obj, self.name )
 DimensioningPreferenceClasses["choice"] = DimensioningPreference_choice
 
 
@@ -324,13 +328,13 @@ DimensioningPreferenceClasses["<type 'bool'>"] = DimensioningPreference_boolean
 
 
 
-class ClickRect(QtGui.QGraphicsRectItem):
+class ClickRect(QtWidgets.QGraphicsRectItem):
     def mousePressEvent( self, event ):
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             self.clickFun()
 class DimensioningPreference_color(DimensioningPreference_prototype):
     def initExtra(self):
-        graphicsScene = QtGui.QGraphicsScene(0,0,30,30)
+        graphicsScene = QtWidgets.QGraphicsScene(0,0,30,30)
         pen = QtGui.QPen( QtGui.QColor(0,0,0,0) )
         pen.setWidth(0.0)
         rect = ClickRect(-100, -100, 200, 200)
@@ -357,7 +361,7 @@ class DimensioningPreference_color(DimensioningPreference_prototype):
         self.dimensioningProcess = dimensioningProcess
         clr = QtGui.QColor(*unsignedToRGB(self.dd_parms.GetUnsigned( self.name, self.defaultValue )) )
         self.colorRect.setBrush( QtGui.QBrush( clr ) )
-        colorBox = QtGui.QGraphicsView( self.graphicsScene )
+        colorBox = QtWidgets.QGraphicsView( self.graphicsScene )
         colorBox.setMaximumWidth( width )
         colorBox.setMaximumHeight( height )
         colorBox.setHorizontalScrollBarPolicy( QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff )
@@ -409,7 +413,7 @@ class DimensioningPreference_font(DimensioningPreference_color):
 
     def generateWidget( self, dimensioningProcess, width = 60, height = 30 ):
         self.dimensioningProcess = dimensioningProcess
-        colorBox = QtGui.QGraphicsView( self.graphicsScene )
+        colorBox = QtWidgets.QGraphicsView( self.graphicsScene )
         colorBox.setMaximumWidth( width )
         colorBox.setMaximumHeight( height )
         colorBox.setHorizontalScrollBarPolicy( QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff )
@@ -450,7 +454,8 @@ class DimensioningPreference_string_list(DimensioningPreference_prototype):
     def val_to_FreeCAD_parm( self, val ):
         return '\n'.join(text.encode('utf8') for text in val )
     def FreeCAD_parm_to_val( self, FreeCAD_parm ):
-        return [ unicode( line, 'utf8' ) for line in FreeCAD_parm.split('\n') ]
+        # return [ unicode( line, 'utf8' ) for line in FreeCAD_parm.split('\n') ]
+        return [ line for line in FreeCAD_parm.split('\n') ]
     def getDefaultValue(self):
         return self.FreeCAD_parm_to_val( self.dd_parms.GetString( self.name, self.val_to_FreeCAD_parm( self.defaultValue ) ) )
     def updateDefault(self):
@@ -501,7 +506,7 @@ class UnitSelectionWidget:
         self.dd_parms = App.ParamGet("User parameter:BaseApp/Preferences/Mod/Drawing_Dimensioning")
 
     def unit_factor( self, unit_text, customScaleValue):
-        if unit_text <> 'custom':
+        if unit_text != 'custom':
             if unit_text == 'Edit->Preference->Unit':
                 #found using App.ParamGet("User parameter:BaseApp/Preferences").Export('/tmp/p3')
                 UserSchema = App.ParamGet("User parameter:BaseApp/Preferences/Units").GetInt("UserSchema")
@@ -516,7 +521,7 @@ class UnitSelectionWidget:
                     v = 25.4
         else:
             v = customScaleValue
-        return 1.0/v if v <> 0 else 1.0
+        return 1.0/v if v != 0 else 1.0
 
     def settingsChanged(self, notUsed=False):
         unit_text = self.unitSelected_combobox.currentText()
@@ -571,7 +576,8 @@ class UnitSelectionWidget:
         obj.unit_custom_scale = self.customScaleValue
 
     def get_values_from_dimension_object( self, obj, KWs ):
-        unit_text =  unicode( obj.unit_scheme, 'utf8'  )
+        # unit_text =  unicode( obj.unit_scheme, 'utf8'  )
+        unit_text =  obj.unit_scheme
         KWs['unit_scaling_factor'] = self.unit_factor( unit_text, obj.unit_custom_scale )
 
 unitSelectionWidget = UnitSelectionWidget()
@@ -587,7 +593,7 @@ class DimensioningTaskDialog:
         title, iconPath, dialogWidgets, preferences = self.initArgs
         self.form = DimensioningTaskDialogForm( self.dimensiongProcess, dialogWidgets, preferences )
         self.form.setWindowTitle( title )    
-        if iconPath <> None:
+        if iconPath != None:
             self.form.setWindowIcon( QtGui.QIcon( iconPath ) )
 
     def reject(self): #close button
@@ -601,7 +607,7 @@ class DimensioningTaskDialog:
         return 0x00200000 #close button
 
 
-class DimensioningTaskDialogForm(QtGui.QWidget):
+class DimensioningTaskDialogForm(QtWidgets.QWidget):
     
     def __init__(self, dimensiongProcess, parameters, preferences ):
         super(DimensioningTaskDialogForm, self).__init__()

@@ -28,7 +28,8 @@ def EditDimensionText( event, referer, elementXML, elementParms, elementViewObje
     debugPrint(3, e.XML[e.pStart:e.pEnd] )
     svgText = SvgTextParser( e.XML[e.pStart:e.pEnd] )
     d.svgText = svgText
-    debugPrint(3, u'editing %s' % unicode(svgText))
+    # debugPrint(3, u'editing %s' % unicode(svgText))
+    debugPrint(3, u'editing %s' % svgText)
     widgets = dict( [c.objectName(), c] for c in dialog.children() )
     widgets['textLineEdit'].setText( svgText.text )
     widgets['sizeLineEdit'].setText( svgText.font_size)
@@ -39,7 +40,7 @@ def EditDimensionText( event, referer, elementXML, elementParms, elementViewObje
     dialog.setWindowTitle('Editing %s' % elementViewObject.Name)
     dialog.show()
     
-class EditTextDialogWidget( QtGui.QWidget ):
+class EditTextDialogWidget( QtWidgets.QWidget ):
     def accept( self ):
         debugPrint(3, 'EditTextDialogWidget accept pressed')
         widgets = dict( [c.objectName(), c] for c in self.children() )
@@ -63,9 +64,9 @@ class EditTextDialogWidget( QtGui.QWidget ):
         debugPrint(3,newXML)
         d.dimToEdit.ViewResult = newXML
         recomputeWithOutViewReset(d.drawingVars)
-        if d.taskDialog <> None: #unessary check
+        if d.taskDialog != None: #unessary check
             FreeCADGui.Control.closeDialog()
-        if d.endFunction <> None:
+        if d.endFunction != None:
             previewDimension.preview.dimensioningProcessTracker = d
             previewDimension.timer.start( 100 ) # 100 ms, need some time for dialog to close
         

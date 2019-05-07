@@ -46,7 +46,7 @@ def initializePreview( dimensioningProcessTracker, dimensionSvgFun, dimensionCli
             createQtItems = False
     else:
         createQtItems = False
-    if preview.SVG_initialization_width <> drawingVars.width or preview.SVG_initialization_height <> drawingVars.height:
+    if preview.SVG_initialization_width != drawingVars.width or preview.SVG_initialization_height != drawingVars.height:
         debugPrint(3, 'initializePreview: change in page rect size dected, recreating SVG graphics item')
         createQtItems = True
     if createQtItems:
@@ -75,7 +75,7 @@ def initializePreview( dimensioningProcessTracker, dimensionSvgFun, dimensionCli
     preview.rect.dimensionSvgFun = dimensionSvgFun
     preview.rect.dimensionClickHandler = dimensionClickHandler
     preview.rect.setAcceptHoverEvents(True)
-    preview.rect.setFlag( QtGui.QGraphicsItem.GraphicsItemFlag.ItemIsFocusable, True )
+    preview.rect.setFlag( QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsFocusable, True )
     preview.rect.setCursor( QtCore.Qt.ArrowCursor ) # http://qt-project.org/doc/qt-5/qt.html#CursorShape-enum
     preview.rect.setZValue( 0.1 )
     drawingVars.graphicsScene.addItem( preview.rect )
@@ -90,10 +90,10 @@ def removePreviewGraphicItems( recomputeActiveDocument = True, launchEndFunction
     if recomputeActiveDocument:
         debugPrint(3,'removePreviewGraphicItems: recomputing')
         recomputeWithOutViewReset( preview.drawingVars )
-    if closeDialog and preview.dimensioningProcessTracker.taskDialog <> None:
+    if closeDialog and preview.dimensioningProcessTracker.taskDialog != None:
         FreeCADGui.Control.closeDialog()
     del preview.drawingVars
-    if launchEndFunction and preview.dimensioningProcessTracker.endFunction <> None:
+    if launchEndFunction and preview.dimensioningProcessTracker.endFunction != None:
         timer.start( 1 ) # 1 ms (in theory)
 
 
@@ -105,7 +105,7 @@ timer = QtCore.QTimer()
 timer.timeout.connect(executeEndFunction)
 
 
-class DimensionPreviewRect(QtGui.QGraphicsRectItem):
+class DimensionPreviewRect(QtWidgets.QGraphicsRectItem):
 
     def keyPressEvent(self, event):
         #if len(event.text()) == 1:

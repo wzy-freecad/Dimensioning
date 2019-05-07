@@ -1,16 +1,16 @@
 import FreeCAD, traceback
-from PySide import QtGui, QtCore, QtSvg
+from PySide2 import QtGui, QtCore, QtSvg, QtWidgets
 
 #code duplicated from dimensioning .py
 def DimensioningTaskDialog_generate_row_hbox( label, inputWidget ):
     hbox = QtGui.QHBoxLayout()
     hbox.addWidget( QtGui.QLabel(label) )
     hbox.addStretch(1)
-    if inputWidget <> None:
+    if inputWidget != None:
         hbox.addWidget(inputWidget)
     return hbox
 
-class ClickRect(QtGui.QGraphicsRectItem):
+class ClickRect(QtWidgets.QGraphicsRectItem):
     def mousePressEvent( self, event ):
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
             self.clickFun()
@@ -97,7 +97,7 @@ class GridOptionsGroupBox:
         self.displayPeriodSpinbox = displayPeriodSpinbox
 
         clr = QtGui.QColor(*unsignedToRGB(self.dd_parms.GetUnsigned( 'grid_color', default_grid_clr )) )
-        graphicsScene = QtGui.QGraphicsScene(0,0,30,30)
+        graphicsScene = QtWidgets.QGraphicsScene(0,0,30,30)
         pen = QtGui.QPen( QtGui.QColor(0,0,0,0) )
         pen.setWidth(0.0)
         rect = ClickRect(-100, -100, 200, 200)
@@ -107,7 +107,7 @@ class GridOptionsGroupBox:
         self.graphicsScene = graphicsScene #protect from garbage collector
         self.colorRect = rect
         self.colorRect.setBrush( QtGui.QBrush( clr ) )
-        colorBox = QtGui.QGraphicsView( self.graphicsScene )
+        colorBox = QtWidgets.QGraphicsView( self.graphicsScene )
         colorBox.setMaximumWidth( 60 )
         colorBox.setMaximumHeight( 30 )
         colorBox.setHorizontalScrollBarPolicy( QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff )

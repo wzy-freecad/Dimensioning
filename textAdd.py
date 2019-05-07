@@ -36,7 +36,8 @@ class rotation_widget:
         self.spinbox.setMaximum(  180 )
         self.spinbox.setDecimals( 1 )
         self.spinbox.setSingleStep( 5 )
-        self.spinbox.setSuffix(unicode('°','utf8'))
+        # self.spinbox.setSuffix(unicode('°','utf8'))
+        self.spinbox.setSuffix('°')
         self.spinbox.valueChanged.connect(self.valueChanged)
         return  DimensioningTaskDialog_generate_row_hbox('rotation', self.spinbox)
     def add_properties_to_dimension_object( self, obj ):

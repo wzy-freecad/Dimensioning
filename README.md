@@ -1,7 +1,7 @@
 FreeCAD_drawing_dimensioning
 ============================
 
-Drawing dimensioning workbench for FreeCAD v0.15.4576 and newer.
+Drawing dimensioning workbench for FreeCAD v0.18.16110 and newer.
 
 Although the original programmer of the workbench (hamish) is no longer active, this workbench is still actively maintained.  Feel free to post issues and pull requests.
 
@@ -22,7 +22,7 @@ $ mkdir ~/.FreeCAD/Mod
 $ cd ~/.FreeCAD/Mod
 $ git clone https://github.com/hamish2014/FreeCAD_drawing_dimensioning.git
 $ cd FreeCAD_drawing_dimensioning
-$ git checkout 0.17/master
+$ git checkout 0.18/master
 ```
 
 Once installed, use git to easily update to the latest version:

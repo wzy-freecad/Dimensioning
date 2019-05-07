@@ -21,7 +21,7 @@ class TaskDialog_pagePreferences:
         FreeCADGui.Control.closeDialog()
 
 
-class Form_pagePreferences(QtGui.QWidget):
+class Form_pagePreferences(QtWidgets.QWidget):
     def __init__(self):
         super(Form_pagePreferences, self).__init__()
         self.initUI()        
@@ -118,7 +118,7 @@ def doSubstituations( EditableTexts ):
         for textToMatch, replaceWith in zip(MatchList, ReplaceWithList):
             if line == textToMatch:
                 newLine = replaceWith
-                if BASENAME <> '':
+                if BASENAME != '':
                     newLine = replaceWith.replace('$BASENAME',BASENAME).replace('$DIRECTORY',DIRECTORY).replace('$DIRNAME', DIRNAME)
                 if '$DATETIME' in newLine:
                     p = newLine.find('$DATETIME')

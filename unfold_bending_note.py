@@ -12,7 +12,8 @@ d.registerPreference( 'strokeWidth' )
 d.registerPreference( 'lineColor' )
 d.registerPreference( 'textRenderer' )
 class angleText_widget:
-    default = unicode('90°','utf8')
+    # default = unicode('90°','utf8')
+    default = '90°'
     def valueChanged( self, arg1):
         d.angleText = arg1
     def generateWidget( self, dimensioningProcess ):
@@ -83,14 +84,14 @@ class BendingNoteCommand:
         self.svg_lineColor = lineColor
         self.svg_strokeWidth = strokeWidth
         XML_body = []
-        if radialLine_x <> None and radialLine_y <> None:
+        if radialLine_x != None and radialLine_y != None:
             XML_body.append( self.svgLine(radialLine_x, radialLine_y, c_x, c_y) )
             d = directionVector(
                 numpy.array([      c_x, c_y]),
                 numpy.array([radialLine_x, radialLine_y]),
                 )
             XML_body.append( arrowHeadSVG( numpy.array([c_x, c_y]), d, arrowL1, arrowL2, arrowW, lineColor ) )
-            if tail_x <> None and tail_y <> None:
+            if tail_x != None and tail_y != None:
                 XML_body.append(  self.svgLine( radialLine_x, radialLine_y, tail_x, radialLine_y) )
                 #getting scale factor
                 svgText = SvgTextParser( textRenderer(0,0,"0") )

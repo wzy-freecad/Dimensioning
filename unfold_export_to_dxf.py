@@ -3,7 +3,7 @@
 from dimensioning import *
 import subprocess
 import FreeCAD, FreeCADGui
-from PySide import QtGui, QtCore, QtSvg
+from PySide2 import QtGui, QtCore, QtSvg
 
 
 class ExportToDxfCommand:
@@ -38,17 +38,17 @@ def shellCmd(cmd, callDirectory=None):
     debugPrint(3,'$' + cmd)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=callDirectory)
     stdout, stderr = p.communicate()
-    if stdout <> '':
+    if stdout != '':
         debugPrint(3,'stdout:%s' % stdout )
-    if p.returncode <> 0:
-        raise RuntimeError, '$ %s \n STDERR:%s' % (cmd, stderr)
+    if p.returncode != 0:
+        raise RuntimeError('$ %s \n STDERR:%s' % (cmd, stderr))
     return stdout
 
 
 def export_via_pstoedit( dxf_fn, V):
     eps_fn = dxf_fn[:-4] + '.eps'
     if os.path.exists(eps_fn):
-        raise RuntimeError,"eps file (%s) exists, aborting operation" % eps_fn
+        raise RuntimeError("eps file (%s) exists, aborting operation" % eps_fn)
     V.page.PageResult
     shellCmd('inkscape -f %s -E %s' % (V.page.PageResult, eps_fn)) #circle maintained after this step
     try:
@@ -84,9 +84,9 @@ def export_via_dxfwrite(  dxf_fn, V):
     SelectViewObjectPoint_loc = None
     for element in XML_tree.getAllElements():
         clr_text = None        
-        if element.parms.has_key('fill'):
+        if 'fill' in element.parms:
             clr_text =  element.parms['fill']
-        elif element.parms.has_key('style'):
+        elif 'style' in element.parms:
             for part in element.parms['style'].split(';'):
                 if part.startswith('stroke:rgb('):
                     clr_text = part[ len('stroke:'):]
@@ -110,7 +110,7 @@ def export_via_dxfwrite(  dxf_fn, V):
             x1, y1 = element.applyTransforms( float( element.parms['x1'] ), float( element.parms['y1'] ) )
             x2, y2 = element.applyTransforms( float( element.parms['x2'] ), float( element.parms['y2'] ) )
             drawing.add( dxf.line( (x1, yT(y1)), (x2, yT(y2)), color=color_code ) )
-        elif element.tag == 'text' and element.parms.has_key('x'):
+        elif element.tag == 'text' and 'x' in element.parms:
             x,y = element.applyTransforms( float( element.parms['x'] ), float( element.parms['y'] ) )
             t = SvgTextParser(element.XML[element.pStart: element.pEnd ] )
             try:
@@ -160,7 +160,7 @@ def export_via_dxfwrite(  dxf_fn, V):
             for bezierCurve in path.bezierCurves:
                 x, y, r, r_error = bezierCurve.fitCircle()
                 if r_error < 10**-4:
-                    raise NotImplementedError
+                    raise NotImplementedError()
                     drawing.add( dxf.arc( *bezierCurve.dxfwrite_arc_parms(x, y, r) ) )
                 else:
                     X,Y = bezierCurve.points_along_curve()
